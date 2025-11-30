@@ -1,13 +1,13 @@
 package servise;
 
 import dao.UserDao;
-import dao.UserDaoJDBC;
+import dao.UserDaoJDBCImpl;
 import model.User;
 
 import java.util.List;
 
-public class UserServiceEmp implements UserService{
-    UserDao userDao = new UserDaoJDBC();
+public class UserServiceImpl implements UserService{
+    UserDao userDao = new UserDaoJDBCImpl();
 
     @Override
     public void createUsersTable() {
@@ -42,4 +42,5 @@ public class UserServiceEmp implements UserService{
     public void cleanUsersTable() {
         userDao.cleanUsersTable();
     }
+
 }
