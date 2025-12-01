@@ -1,32 +1,110 @@
 package servise;
 
-import junit.framework.TestCase;
 
-public class UserServiceTest extends TestCase {
+import model.User;
+import org.junit.jupiter.api.*;
 
-    public void setUp() throws Exception {
-        super.setUp();
+import java.util.List;
+
+public class UserServiceTest {
+
+    private static UserService userService;
+
+    @BeforeAll
+    static void setup() {
+        userService = new UserServiceImpl();
+        userService.createUsersTable();
     }
 
-    public void tearDown() throws Exception {
-        super.tearDown();
+    @AfterEach
+    void cleanUp() {
+        userService.cleanUsersTable();
     }
 
-    public void testCreateUsersTable() {
+    @AfterAll
+    static void tearDown() {
+        userService.dropUsersTable();
     }
 
-    public void testDropUsersTable() {
+    @Test
+    void saveUser_shouldSaveUserToDatabase() {
+        String name = "Ivan";
+        String lastName = "Petrov";
+        byte age = 25;
+
+
+        userService.saveUser(name, lastName, age);
+        List<User> allUsers = userService.getAllUsers();
+
+
+        Assertions.assertEquals(1, allUsers.size());
+        User savedUser = allUsers.getFirst();
+        Assertions.assertEquals(name, savedUser.getName());
+        Assertions.assertEquals(lastName, savedUser.getLastName());
+        Assertions.assertEquals(age, savedUser.getAge());
     }
 
-    public void testSaveUser() {
+    @Test
+    void removeUserById_shouldRemoveUserFromDatabase() {
+
+        String name = "Elena";
+        String lastName = "Sidorova";
+        byte age = 30;
+        userService.saveUser(name, lastName, age);
+        List<User> allUsers = userService.getAllUsers();
+        long idToRemove = allUsers.getFirst().getId();
+
+
+        userService.removeUserById(idToRemove);
+        List<User> usersAfterRemoval = userService.getAllUsers();
+
+
+        Assertions.assertEquals(0, usersAfterRemoval.size());
     }
 
-    public void testRemoveUserById() {
+    @Test
+    void getAllUsers() {
+
+        userService.saveUser("Petr", "Ivanov", (byte) 28);
+        userService.saveUser("Anna", "Smirnova", (byte) 22);
+
+
+        List<User> allUsers = userService.getAllUsers();
+
+        Assertions.assertEquals(2, allUsers.size());
     }
 
-    public void testGetAllUsers() {
+    @Test
+    void cleanUsersTable() {
+
+        userService.saveUser("Dmitry", "Kuznetsov", (byte) 35);
+        userService.getAllUsers();
+
+
+        userService.cleanUsersTable();
+        List<User> usersAfterClean = userService.getAllUsers();
+
+
+        Assertions.assertEquals(0, usersAfterClean.size());
     }
 
-    public void testCleanUsersTable() {
+    @Test
+    void createAndDropTable() {
+
+        String name = "Vasia";
+        String lastName = "Pupkin";
+        byte age = 18;
+        userService.saveUser(name, lastName, age);
+        Assertions.assertEquals(1, userService.getAllUsers().size());
+
+
+        userService.dropUsersTable();
+        userService.createUsersTable();
+        List<User> allUSers = userService.getAllUsers();
+
+
+        Assertions.assertEquals(0, allUSers.size());
     }
+
+
 }
