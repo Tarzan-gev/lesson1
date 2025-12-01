@@ -6,7 +6,7 @@ import model.User;
 
 import java.util.List;
 
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     UserDao userDao = new UserDaoJDBCImpl();
 
     @Override
@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        userDao.dropUsersTable();
+        userDao.saveUser(name, lastName, age);
     }
 
     @Override
@@ -31,11 +31,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public List<User> getAllUsers() {
-        List<User> users = userDao.getAllUsers();
-        for (User user : users) {
-            System.out.println(user);
-        }
-        return users;
+
+        return userDao.getAllUsers();
     }
 
     @Override
