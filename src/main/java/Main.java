@@ -1,9 +1,10 @@
+
 import servise.UserService;
 import servise.UserServiceImpl;
 
 public class Main {
 
-    private final static UserService userService = new UserServiceImpl();
+    private final  static UserService userService = new UserServiceImpl();
 
     public static void main(String[] args) {
         userService.createUsersTable();
@@ -21,6 +22,7 @@ public class Main {
 
         userService.dropUsersTable();
     }
+
 
 
 }

@@ -1,13 +1,21 @@
 package servise;
 
 import dao.UserDao;
-import dao.UserDaoJDBCImpl;
+
 import model.User;
 
 import java.util.List;
 
 public class UserServiceImpl implements UserService {
-    UserDao userDao = new UserDaoJDBCImpl();
+
+    private UserDao userDao;
+
+
+    public UserServiceImpl() {
+
+    }
+
+
 
     @Override
     public void createUsersTable() {
