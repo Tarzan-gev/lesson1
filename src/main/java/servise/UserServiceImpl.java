@@ -1,8 +1,8 @@
 package servise;
 
 import dao.UserDao;
-
 import model.User;
+import dao.UserHibernateDaoImpl;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public class UserServiceImpl implements UserService {
 
 
     public UserServiceImpl() {
-
+        this.userDao = new UserHibernateDaoImpl();
     }
 
 

@@ -1,34 +1,45 @@
 package util;
 
-import java.sql.*;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import java.util.Properties;
 
 
 public class Util {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/mydbtest1";
-    private static final String USERNAME = "root";
-    private static final String PASSWORD = "1982";
-
+    private static SessionFactory sessionFactory;
 
     static {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            System.err.println("Драйвер MySQL не найден!");
-            e.printStackTrace();
+            Properties settings = new Properties();
+            settings.put("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
+            settings.put("hibernate.connection.url", "jdbc:mysql://localhost:3306/your_db");
+            settings.put("hibernate.connection.username", "your_user");
+            settings.put("hibernate.connection.password", "your_password");
+            settings.put("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
+            settings.put("hibernate.show_sql", "true");
+            settings.put("hibernate.hbm2ddl.auto", "update");
+
+            StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+                    .applySettings(settings)
+                    .build();
+
+            sessionFactory = new MetadataSources(registry)
+                    .addAnnotatedClass(model.User.class)
+                    .buildMetadata()
+                    .buildSessionFactory();
+
+        } catch (Throwable e) {
+            System.err.println("Ошибка инициализации Hibernate: " + e);
+            throw new ExceptionInInitializerError(e);
         }
     }
 
-    public static Connection getConnection() {
-        Connection conn = null;
-        try {
-            conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            System.out.println("Соединение с БД установлено!");
-        } catch (SQLException e) {
-            System.err.println("Ошибка подключения к БД: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return conn;
+    public static SessionFactory getSessionFactory() {
+        return sessionFactory;
     }
 
 }
